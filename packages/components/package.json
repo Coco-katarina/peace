@@ -1,0 +1,42 @@
+{
+  "name": "@peace/components",
+  "version": "0.0.8",
+  "description": "组件集",
+  "keywords": [
+    "组件"
+  ],
+  "author": "<1650192445@qq.com>",
+  "homepage": "https://github.com/xiapazhi/peace#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "http://10.8.30.22:7000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiapazhi/peace.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/xiapazhi/peace/issues"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^4.3.0",
+    "@peace/utils": "^0.0.8",
+    "antd": "^4.7.2",
+    "immutable": "^4.0.0-rc.12",
+    "moment": "^2.22.0",
+    "perfect-scrollbar": "^1.5.0",
+    "react": "^17.0.0",
+    "react-cropper": "^2.1.4",
+    "react-dom": "^17.0.0"
+  }
+}
