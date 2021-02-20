@@ -85,7 +85,7 @@ export default class Menu extends Component {
         }
     };
 
-    UNSAFE_componentWillMount(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         let currOptions = this.props.options;
         let nextOptions = nextProps.options;
         if (currOptions.length == nextOptions.length) {
