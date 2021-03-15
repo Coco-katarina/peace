@@ -8,6 +8,9 @@ import {
 } from '../actions/appMessage';
 import AppMessageForm from '../components/appMessageForm';
 import { PinyinHelper, Func } from '@peace/utils';
+import { AuthorizationCode } from '$utils';
+
+const { AddAppNotice, UpdateAppNotice, DeleteAppNotice } = AuthorizationCode
 
 class AppNotice extends Component {
     constructor(props) {
@@ -69,7 +72,6 @@ class AppNotice extends Component {
     }
 
     render() {
-        const { AddAppNotice, UpdateAppNotice, DeleteAppNotice } = global.fs && global.fs.notification.AuthorizationCode || {}
         const projects = (this.props.projects || []).reduce((p, n) => p.concat(n.projects), []);
         const projectOptions = (this.props.projects || []).filter(p => p.status == 4).reduce((p, n) => p.concat(n.projects), [])
         const canAdd = Func.judgeRights(AddAppNotice)
@@ -198,7 +200,6 @@ class AppNotice extends Component {
                     projects={projectOptions}
                     visible={this.state.appMessage}
                     hiddenForm={() => this.hiddenAppMessageForm()}
-                    ref="form"
                     editData={this.state.appMessageData}
                 />
             </div>
