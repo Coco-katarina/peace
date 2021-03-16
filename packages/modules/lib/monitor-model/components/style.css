@@ -1,0 +1,21 @@
+
+:global(.factor-card-body){
+  overflow: auto;
+  margin-right: -12px; 
+  padding: 10px 24px 0 24px;
+  height: 100px;
+}
+:global(.factorCard .ant-card-body){
+  margin-bottom: 24px;
+  background-color: rgba(247,249,250,0.96);
+  padding: 0;
+  overflow: hidden;
+}
+:global(.factor-card-head-icon){
+  cursor: pointer; 
+  position: relative;
+  left: -20px;
+  /*transform: rotate(90deg);*/
+  font-size: 18px;
+    color:#666;
+}
