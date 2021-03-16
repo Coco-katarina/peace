@@ -1,7 +1,7 @@
 "use strict";
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { Layout, Row, Col, Spin, } from "antd";
+import { Layout, Row, Col, Spin, Empty } from "antd";
 import { PinyinHelper, Func } from '@peace/utils';
 import { AuthorizationCode } from '$utils';
 import {
@@ -14,7 +14,6 @@ import {
 import { getFactorList } from '../actions/factor';
 import TemplateModal from "../components/factorTemplate/templateModal";
 import TemplateCard from "../components/factorTemplate/templateCard";
-import NoData from "../../../components/NoData";
 import PageSearch from "../components/PageSearch";
 
 const { Content } = Layout;
@@ -149,7 +148,7 @@ class FactorTemplate extends Component {
                                 );
                             }
                         }
-                    ) : <NoData />}
+                    ) : <div style={{ width: '100%' }}><Empty description={false} /></div>}
                 </Row>
             </Content>
             {this.state.modalVisible ? <TemplateModal closeModal={this.modalCancel} modalData={this.state.modalData} structtypeList={this.props.structureType} addTemplate={this.addTemplate} updateTemplate={this.updateTemplate} selectData={this.state.selectData} /> : ""}

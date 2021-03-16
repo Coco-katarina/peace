@@ -1,6 +1,7 @@
 'use strict';
-
-import { Request, ApiTable } from '../../../utils/webapi';
+//2021
+import { Request } from '@peace/utils'
+import { ApiTable } from '$utils'
 
 export const REQUEST_RESET_PASSWORD = 'REQUEST_RESET_PASSWORD';
 export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS';
@@ -16,7 +17,7 @@ export function resetPwd(domain, phone, code, password) {
             phone: phone,
             code: code,
             password: password
-        }).then(res => {            
+        }).then(res => {
             return dispatch({
                 type: RESET_PASSWORD_SUCCESS,
                 payload: { res: res }
@@ -28,7 +29,7 @@ export function resetPwd(domain, phone, code, password) {
             }
             return dispatch({
                 type: RESET_PASSWORD_ERROR,
-                payload: { error: msg }                
+                payload: { error: msg }
             });
         });
     };

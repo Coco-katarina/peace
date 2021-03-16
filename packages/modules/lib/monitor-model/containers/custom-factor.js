@@ -2,12 +2,11 @@
 
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { Layout, Row, Col, Spin } from "antd";
+import { Layout, Row, Col, Spin, Empty } from "antd";
 import { PinyinHelper, Func } from '@peace/utils';
 import { AuthorizationCode } from '$utils';
 import FactorModal from "../components/factor/factorModal";
 import FactorCard from "../components/factor/factorCard";
-import NoData from "../../../components/NoData";
 import PageSearch from "../components/PageSearch";
 import {
     getFactorList,
@@ -153,7 +152,7 @@ class CustomFactor extends Component {
                                 );
                             }
                         }
-                    ) : <NoData />}
+                    ) : <div style={{ width: '100%' }}><Empty description={false} /></div>}
                 </Row>
             </Content>
             {this.state.modalVisible ? <FactorModal closeModal={this.modalCancel} modalData={this.state.modalData} addFactor={this.addFactor} updateFactor={this.updateFactor} structtypeList={this.props.structureType} /> : ""}

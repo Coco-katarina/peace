@@ -1,0 +1,175 @@
+.wrap:hover span {
+    display   : block;
+    position  : absolute;
+    text-align: 'center';
+    width     : 100%
+}
+
+.wrap span {
+    display: none;
+    float  : left;
+}
+
+.fr {
+    float: right;
+}
+
+.fl {
+    float: left;
+}
+
+.fix:after {
+    content: " ";
+    display: block;
+    clear  : both;
+}
+
+.integration_main {
+    margin-bottom: 24px;
+}
+
+.integration_main i {
+    float        : left;
+    width        : 46px;
+    font-size    : 31px;
+    margin-right : 8px;
+    text-align   : center;
+    color        : #fff;
+    border-radius: 50%;
+    background   : #d9d9d9;
+}
+
+.integration_main .item:nth-child(1) i {
+    background: #2db7f5;
+}
+
+.integration_main .item:nth-child(2) i {
+    background: #808bc6;
+}
+
+.integration_main .item:nth-child(3) i {
+    background: #7dc856;
+}
+
+.integration_main .item:nth-child(4) i {
+    background: #f9bf00;
+}
+
+.integration_main .item p:first-child {
+    font-size: 12px;
+}
+
+.integration_main .item p:last-child {
+    font-size  : 18px;
+    font-weight: bold;
+}
+
+.integration_main p {
+    margin: 0;
+}
+
+.create_search {
+    margin: 24px 0;
+}
+
+.more_search {
+    color        : #888;
+    padding      : 0 24px;
+    margin-bottom: 24px;
+    border-radius: 4px;
+    border       : 1px solid #e9e9e9;
+    background   : #fff;
+}
+
+.struct_list {
+    font-size    : 12px;
+    margin-bottom: 24px;
+}
+
+.struct_list .struct_item {
+    margin-bottom : 20px;
+    padding-bottom: 8px;
+    border-bottom : 1px solid #e9e9e9;
+}
+
+.struct_list .struct_item .info_list {
+    font-size: 12px;
+    margin   : 8px 0;
+}
+
+.struct_list .struct_item .time_select_box,
+.struct_detail .time_select_box {
+    float    : right;
+    font-size: 12px;
+}
+
+.struct_list .struct_item .time_select_box a,
+.struct_detail .time_select_box a {
+    color: #888888;
+}
+
+.struct_list .struct_item .time_select_box a:hover,
+.struct_detail .time_select_box a:hover {
+    color: #108ee9;
+}
+
+.struct_list .struct_item .time_select_box .time_select,
+.struct_detail .time_select_box .time_select {
+    color: #108ee9;
+}
+
+.struct_list .wrong_info {
+    margin-bottom: 20px;
+    font-size    : 12px;
+}
+
+.struct_list .wrong_info .item {
+    float        : left;
+    margin       : 0 5px 4px 0;
+    padding      : 0 5px;
+    cursor       : pointer;
+    border       : 1px solid #d9d9d9;
+    border-radius: 4px;
+}
+
+.struct_list .wrong_info .item:hover {
+    color       : #108ee9;
+    border-color: #108ee9;
+}
+
+.struct_detail {
+    font-size: 12px;
+    padding  : 0 10px;
+}
+
+.info_layout .item_name {
+    float       : right;
+    margin-right: 8px;
+    line-height : 28px;
+}
+
+.info_layout .item_value {
+    line-height: 28px;
+}
+
+.info_layout .location_img {
+    position: absolute;
+    height  : 24px;
+    top     : 2px;
+    right   : -27px;
+}
+
+.structs_box .item {
+    color        : #108ee9;
+    padding      : 4px;
+    margin-right : 10px;
+    cursor       : pointer;
+    border       : 1px solid #108ee9;
+    border-radius: 4px;
+}
+
+.structs_box .item:hover {
+    color     : #fff;
+    background: #108ee9;
+    transition: all 0.5s ease;
+}
