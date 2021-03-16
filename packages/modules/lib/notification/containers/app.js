@@ -174,7 +174,7 @@ class AppNotice extends Component {
                                     }}>
                                     {
                                         projectOptions.map(p => (
-                                            <Option key={p.id} value={p.id}>{p.name}</Option>
+                                            <Select.Option key={p.id} value={p.id}>{p.name}</Select.Option>
                                         ))
                                     }
                                 </Select>
