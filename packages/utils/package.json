@@ -24,5 +24,6 @@
     "immutable": "^4.0.0-rc.12",
     "superagent": "^6.1.0",
     "superagent-no-cache": "^0.1.1"
-  }
+  },
+  "gitHead": "2446f2df78196fe0850f760c5c02f3214bddfe37"
 }

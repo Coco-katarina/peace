@@ -8,6 +8,7 @@ import Auth from './auth'
 import Application from './application';
 import SmartSite from './smart-site';
 import MonitorModel from './monitor-model';
+import Analysis from './analysis';
 
 export {
     Default,
@@ -19,5 +20,6 @@ export {
     Auth,
     Application,
     SmartSite,
-    MonitorModel
+    MonitorModel,
+    Analysis
 }

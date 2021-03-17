@@ -7,6 +7,7 @@ import MultiSelect from './multiSelect'
 import Search from './search'
 import Spin from './spin'
 import Table from './table'
+import Chart from './Charts'
 
 export {
     ImageCropper,
@@ -15,5 +16,6 @@ export {
     Modal,
     Search,
     Table,
-    Spin
+    Spin,
+    Chart
 }

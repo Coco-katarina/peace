@@ -38,5 +38,6 @@
     "react": "^17.0.0",
     "react-cropper": "^2.1.4",
     "react-dom": "^17.0.0"
-  }
+  },
+  "gitHead": "2446f2df78196fe0850f760c5c02f3214bddfe37"
 }

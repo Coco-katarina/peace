@@ -1,0 +1,78 @@
+.aggreaget{
+    padding: '24px';
+}
+.aggreaget-row{
+    margin-bottom: 20px;
+}
+.aggreaget-select{
+    width: 200px;
+}
+.aggreaget-search{
+    width: 200px;
+    float: right;
+}
+.aggreaget-modal-select{
+    width: 200px;
+}
+.report_row{
+    margin-top: 16px;
+}
+.report_nodata{
+    width: 100%;
+    text-align: center;
+    padding: 50px;
+    background-color: #f8f8f8;
+}
+.contrast_option{
+    position: absolute;
+    width: 420px;
+    right: 0;
+    top: 89px;
+    z-index: 91;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #c9c9c9;
+    transition:right .5s ease;
+    overflow-y:auto
+}
+.close_contrast_option{
+    position: absolute;
+    width: 420px;
+    top: -600px;
+    right: 0px;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #c9c9c9;
+    transition:right .5s ease;
+    overflow-y:auto
+}
+.correlation_option{
+    position: absolute;
+    width: 420px;
+    right: 0;
+    top: 92px;
+    z-index: 91;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #c9c9c9;
+    transition:right .5s ease;
+    overflow-y:auto
+}
+.close_correlation_option{
+    position: absolute;
+    width: 420px;
+    top: -600px;
+    right: 0px;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #c9c9c9;
+    transition:right .5s ease;
+    overflow-y:auto
+}
+/**数据对比*/
+.contrast_menu_card{
+    position: "absolute";
+    top: 86px;
+    right: 46px;
+    width: 420px; 
+}
