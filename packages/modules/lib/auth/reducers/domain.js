@@ -10,7 +10,7 @@ const initState = {
 
 function domain(state = initState, action) {
     const payload = action.payload;
-    switch (action.type) {        
+    switch (action.type) {
         case actionTypes.REQUEST_DOMAIN:
             return Immutable.fromJS(state).merge({
                 isRequesting: true,
@@ -31,31 +31,6 @@ function domain(state = initState, action) {
     }
 }
 
-const initFoundState = {    
-    isRequesting: false,
-    error: null
+export {
+    domain,
 };
-
-function domainFound(state = initFoundState, action) {
-    const payload = action.payload;
-    switch (action.type) {        
-        case actionTypes.REQUEST_FIND_DOMAIN:
-            return Immutable.fromJS(state).merge({
-                isRequesting: true,
-                error: null
-            }).toJS();
-        case actionTypes.FIND_DOMAIN_SUCCESS:
-            return Immutable.fromJS(state).merge({
-                isRequesting: false                
-            }).toJS();
-        case actionTypes.FIND_DOMAIN_ERROR:
-            return Immutable.fromJS(state).merge({
-                isRequesting: false,
-                error: payload.error
-            }).toJS();
-        default:
-            return state;
-    }
-}
-
-export { domain, domainFound };

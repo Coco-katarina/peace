@@ -40,3 +40,7 @@ export function getDomainInfo(domain) {
         );
     };
 }
+
+export default {
+    getDomainInfo
+}

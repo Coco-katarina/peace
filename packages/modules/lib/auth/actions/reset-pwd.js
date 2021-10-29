@@ -34,3 +34,7 @@ export function resetPwd(domain, phone, code, password) {
         });
     };
 }
+
+export default {
+    resetPwd
+}

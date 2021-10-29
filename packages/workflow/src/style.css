@@ -1,0 +1,18 @@
+.icon .tip {
+    margin-left       : 10px;
+    -webkit-transition: opacity 0.1s 0.2s;
+    opacity           : 0;
+    display: none;
+    pointer-events    : none;
+}
+
+.icon:hover .tip {
+    -webkit-transition: opacity 0.2s;
+    opacity           : 1;
+    display: inline-block;
+    pointer-events    : auto;
+}
+
+.icon .tip:hover {
+    -webkit-transition: none;
+}

@@ -1,0 +1,62 @@
+.xform-custom-upload {
+    .example-link {
+        color: #1890FF;
+    }
+    .am-list-line {
+        .am-list-content {
+            width: 100px;
+            max-width: 100px;
+            margin-right: 10px;
+        }
+        .am-list-extra {
+            flex: 1.0;
+            -webkit-flex: 1.0;
+        }
+    }
+    .am-flexbox {
+        overflow: visible;
+        flex-wrap: wrap;
+    }
+    &.disabled {
+        .am-list-content, .am-list-extra {
+            color: #bbbbbb;
+        }
+    }
+}
+
+.xform-image-preview-modal {
+    width: 100% !important;
+    .xform-image-preview-wrapper {
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    }
+}
+.upload{
+    position: relative;
+    display: flex;
+    padding: 12.5px 0 12.5px 20px;
+    min-height: 44px;
+    background-color: #fff;
+    vertical-align: middle;
+    overflow: hidden;
+    -webkit-transition: background-color 200ms;
+    transition: background-color 200ms;
+    .upload-label{
+        color: #000;
+        font-size: 14px;
+        margin-left: 0;
+        margin-right: 5px;
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        padding: 2px 0;
+        width: 30%;
+    }
+    .upload-content{
+        //width: 70%;
+        width: 160px;
+        padding: 5px 0;
+    }
+}
