@@ -1,6 +1,6 @@
 {
   "name": "@peace/components",
-  "version": "0.0.43",
+  "version": "0.0.44",
   "description": "组件集",
   "keywords": [
     "组件"
@@ -32,13 +32,13 @@
     "@ant-design/icons": "^4.3.0",
     "@peace/utils": "^0.0.41",
     "antd": "^4.7.2",
+    "file-saver": "^2.0.5",
     "immutable": "^4.0.0-rc.12",
     "moment": "^2.22.0",
     "perfect-scrollbar": "^1.5.0",
     "react": "^17.0.0",
     "react-cropper": "^2.1.4",
-    "react-dom": "^17.0.0",
-    "file-saver": "^2.0.5"
+    "react-dom": "^17.0.0"
   },
   "gitHead": "2446f2df78196fe0850f760c5c02f3214bddfe37"
 }
