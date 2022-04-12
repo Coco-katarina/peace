@@ -1,76 +1,90 @@
+
 import React, { Component } from 'react';
-import G2 from '@antv/g2';
-import './theme';
-import { Button } from 'antd';
-import FileSaver from 'file-saver';
+import ReactEcharts from 'echarts-for-react';
+import {
+    tooltip, toolbox, legend, xAxis, splitLine, axisLine, axisTick, axisLabel, yAxis, DEFAULT_COLOR, color, dataZoom
+} from './constants';
 
-let chartDownload = "";
-let chart;
+
 class CommonPointChart extends Component {
+    constructor(props) {
+        super(props);
+        this.series = null;
+    }
     UNSAFE_componentWillReceiveProps(nextProps) {
-        const { data, height, scaleConfig } = nextProps;
+        const { data } = nextProps;
+        if (JSON.stringify(data) != JSON.stringify(this.props.data)) {
+            this.series = this.setData(nextProps);
+        }
+    }
+    setData = (props) => {
+        const { scaleConfig, config } = props;
+        const yaxis = config?.yAxis || 'y';
+       
+        let series = [{
+            name: scaleConfig[yaxis]?.alias || '',
+            data:  props.data.map(v => v[yaxis]),
+            type: 'scatter'
+        }];
+       
+        return series;
+    }
 
-        chart.destroy()
-        this.renderChart(data, height, scaleConfig);
+    UNSAFE_componentWillMount() {
+        this.series = this.setData(this.props);
     }
-    componentDidMount() {
-        const { data, height, scaleConfig } = this.props;
-        this.renderChart(data, height, scaleConfig);
-    }
-    renderChart = (data, height, scaleConfig) => {
-        chart = new G2.Chart({
-            id: 'point',
-            forceFit: true,
-            height: height,
-            padding: [50, 60, 70, 60]
-        });
-        chart.source(data, scaleConfig);
-        chart.axis('xAxis', {
-            title: {},
-            label: {
-                textStyle: {
-                    //fill: '#C0C0C0', // 文本的颜色
+    getOption = () => {
+        const { scaleConfig, config, data } = this.props;
+        const xaxis = config?.xAxis || 'x';
+        const yaxis = config?.yAxis || 'y';
+        let option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
                 }
-            }
-        });
-        chart.axis('yAxis', {
-            title: {},
-            label: {
-                textStyle: {
-                    //fill: '#C0C0C0', // 文本的颜色
-                }
-            }
-        });
-        chart.legend(false);
-        chart.point().position('xAxis*yAxis').size(4).shape('circle').opacity(0.65);
-        chart.render();
-        chart.changeData(data);
-        this.chartDownload = chart;
-    }
-    download = () => {
-        //两种都可行
-        this.chartDownload.downloadImage();
-        // const dataurl = this.chartDownload.toDataURL();
-        // let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-        //     bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-        // while (n--) {
-        //     u8arr[n] = bstr.charCodeAt(n);
-        // }
-        // let blob = new Blob([u8arr], { type: mime });
-
-        // FileSaver.saveAs(blob, "chart.png");
+            },
+            toolbox: {
+                feature: {
+                  saveAsImage: {}
+                },
+                right: 30
+            },
+            backgroundColor: DEFAULT_COLOR,
+            color: color,
+            legend: false,
+            xAxis: { 
+                ...xAxis.category,
+                name: scaleConfig[xaxis]?.alias || '',
+               
+                data: data.map(v => v[xaxis])
+            },
+            series: this.series,
+            yAxis: [{
+                type: 'value',
+                name: scaleConfig[yaxis]?.alias || '',
+                splitLine: {
+                    show: false
+                },
+                scale: true
+            }]
+        }
+       
+        return option;
+        
     }
     render() {
+        const { height, width } = this.props;
+       
+        const options = this.getOption();
+       
         return (
-            <div style={{ position: 'relative', paddingTop: 20, marginBottom: 24 }}>
-                <div style={{ position: 'absolute', right: '20px', top: '20px', zIndex: 90 }} >
-                    <Button onClick={this.download} size="default">导出</Button>
-                </div>
-                <div>
-                    <div style={{ width: '100%', height: '300px' }} id="point"></div>
-                </div>
-            </div>
-        );
+            <ReactEcharts
+                option={options}
+                notMerge={true}
+                lazyUpdate={true}
+                style={{ height: height || '300px', margin: '0', width: width || 'auto' }} />
+        )
     }
 }
 

@@ -1,0 +1,22 @@
+{
+  "name": "@peace/plugins",
+  "version": "0.0.43",
+  "description": "安心云插件包",
+  "author": "XuMeng <719013233@qq.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "http://10.8.30.22:7000/"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  }
+}

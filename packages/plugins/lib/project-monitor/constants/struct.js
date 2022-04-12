@@ -1,0 +1,26 @@
+//查询监测因素
+export const FactorsGetTypes = "GET_FACTORS";
+//查询测点
+export const StationsGetTypes = "GET_STATIONS";
+//查询结构物信息
+export const StructureGetTypes = {
+    REQUESTING: `REQUEST_GET_STRUCTURE`,
+    REQUEST_SUCCESS: `GET_STRUCTURE_SUCCESS`,
+    REQUEST_ERROR: `GET_STRUCTURE_ERROR`
+}
+//结构物筛选
+export const StructFilterTypes = {
+    CHANGE: 'CHANGE_STRUCTURE_FILTER_PARAMS',
+}
+//结构物告警
+export const StructureAlarmStatGetTypes = {
+    REQUESTING: `REQUEST_GET_STRUCTURE_ALARM_STATE`,
+    REQUEST_SUCCESS: `GET_STRUCTURE_ALARM_STATE_SUCCESS`,
+    REQUEST_ERROR: `GET_STRUCTURE_ALARM_STATE_ERROR`,
+}
+//查询结构物相关资源
+export const StructResGetTypes = {
+    REQUESTING: `REQUEST_GET_STRUCTURE_RESOURCES`,
+    REQUEST_SUCCESS: `GET_STRUCTURE_RESOURCES_SUCCESS`,
+    REQUEST_ERROR: `GET_STRUCTURE_RESOURCES_ERROR`,
+}

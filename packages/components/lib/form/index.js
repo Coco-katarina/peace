@@ -38,7 +38,7 @@ const Form = forwardRef((props, ref) => {
     let hubUrl = [];
     //提交表单且数据验证成功后回调事件
     const onFinish = (values) => {
-        console.log('finish:' + values);
+        //console.log('finish:' + values);
     };
     //文件上传限制
     const handleBeforeUpload = (file, onlyImg) => {

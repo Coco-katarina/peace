@@ -9,7 +9,7 @@ const ImageCropper = (props) => {
 
     const [image, setImage] = useState(originalImage);
     const [cropper, setCropper] = useState();
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (originalImage) {
@@ -66,7 +66,7 @@ const ImageCropper = (props) => {
             u8arr[n] = bstr.charCodeAt(n);
         }
         let blob = new Blob([u8arr], { type: mime });
-        console.log('size', blob.size);
+        //console.log('size', blob.size);
         let fileData = new FormData();
         fileData.append('image', blob, "image.png");
         handleCropperOk(fileData)

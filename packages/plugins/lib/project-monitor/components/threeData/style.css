@@ -1,0 +1,170 @@
+p{
+    margin: 0;
+    padding: 0;
+}
+ .container{
+    position: absolute;
+    top: 56px;
+    left: 16px;
+    width: 300px; 
+ }  
+.sensor_list{
+    width:300px; 
+    padding: 10px;
+    border: 1px solid #d9d9d9;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.8);
+}
+.select_btns{
+    margin-bottom: 10px;
+}
+.select_btns .select_btn{
+    background: transparent!important;
+}
+.select_btns .selected{
+    color: #108ee9 !important;
+    border: 1px solid #108ee9;
+}
+.sensors_box{
+    height: 300px;
+    overflow-y: scroll;
+    -webkit-user-select: none; 
+    -moz-user-select: none;    
+    -khtml-user-select: none;  
+    -ms-user-select: none;    
+
+    /* 以下两个属性目前并未支持，写在这里为了减少风险 */
+    -o-user-select: none;
+    user-select: none; 
+}
+.save_btn{
+    display: block;
+    color: #fff;
+    width: 300px;
+    height: 30px;
+    margin-top: 10px;
+    line-height: 30px;
+    text-align: center;
+    background: #108ee9;
+    border-radius: 5px;
+}
+.save_btn_disable{
+    display: block;
+    color: #fff;
+    width: 300px;
+    height: 30px;
+    margin-top: 10px;
+    line-height: 30px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+}
+.endragable{
+    background: #f2eada;
+    border-radius: 5px;
+    margin-bottom: 2px;
+}
+.endragable p{
+    width: 204px;
+    padding: 0 10px;
+    color: #808080;
+}
+.deleteBtn{
+    float: right;
+}
+.deleteBtn:hover{
+    color: #63b3ed;
+}
+.sensors{
+    padding: 10px;
+    max-height: 300px;
+    /* overflow-y: scroll; */
+}
+.sensors li{
+    height: 30px;
+    line-height: 30px;
+    border-bottom: 1px solid #e6e8eb;
+}
+.l{
+    float: left;
+}
+.r{
+    float: right;
+}
+.fix:after {
+    content: " ";
+    display: block;
+    clear: both;
+}
+.separator {
+    float: right;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.labelBox:hover{
+    color: #108ee9;
+}
+.lableIcon{
+    float: left;
+    width: 20px;
+    height: 20px;
+    margin-right: 3px;
+}
+.station-tree-normal{
+    margin-right: 6px;
+    padding: 0 4px;
+    height: 15px;
+    line-height: 15px;
+    background: #108ee9;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+}
+.station-tree-selected {
+    margin-right: 6px;
+    padding: 0 4px;
+    height: 15px;
+    line-height: 15px;
+    background: #FFCC00;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+}
+.threeIcon .threeTip{
+    margin-left:10px;
+    -webkit-transition:opacity 0.1s 0.2s;
+    opacity:0;
+    pointer-events:none;
+}
+.threeIcon:hover .threeTip{
+    -webkit-transition:opacity 0.2s;
+    opacity:1;
+    pointer-events:auto;
+}
+.threeIcon .threeTip:hover{
+    -webkit-transition:none;
+}
+
+.html-text-block {
+    color: white;
+    width: 120px;
+    position: relative;
+    margin-left: 80px;
+  }
+  
+  .html-text-block.margin300 {
+    margin-left: 300px;
+  }
+  
+  .html-text-block:before {
+    content: '';
+    display: block;
+    position: absolute;
+  
+    top: 50%;
+    left: -60px;
+  
+    width: 60px;
+    height: 1px;
+    background-color: white;
+  }

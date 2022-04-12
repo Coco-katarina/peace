@@ -1,0 +1,151 @@
+.spot {
+    position:relative;     
+    width:24px;
+    height:24px;
+  }
+  .outer-circle {
+    &-1{      
+      animation: circleAnimationOut-1 .5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    &-2{
+      animation: circleAnimationOut-2 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    &-3{
+      animation: circleAnimationOut-3 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    &-good{
+      animation: circleAnimationOut-good 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    &-none{
+      animation: circleAnimationOut-none 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+  }
+  .inner-circle {
+    &-1{      
+      animation: circleAnimationIn-1 .5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }    
+
+    &-2{      
+      animation: circleAnimationIn-2 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    &-3{      
+      animation: circleAnimationIn-3 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    &-good{      
+      animation: circleAnimationIn-good 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    &-none{
+      background: rgb(57, 58, 55);
+      animation: circleAnimationIn-none 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+  }
+  .outer-circle, .inner-circle {
+    position: absolute;    
+    width: 12px;
+    height: 12px;    
+    border-radius: 100%;
+    background: transparent;
+    animation-iteration-count: infinite;
+  }
+  
+  @keyframes circleAnimationOut-1 {
+    0% {
+      box-shadow: 0 0 0 0px rgba(255, 41, 0, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 0 12px rgba(255, 42, 0, 0.2);
+    }
+  }
+  @keyframes circleAnimationIn-1 {
+    0% {
+      box-shadow: 0 0 0 0px rgba(255, 42, 0, 0.5);
+      background-color: rgba(255, 42, 0, 1);
+    }
+    100% {
+      box-shadow: 0 0 0 4px rgba(255, 42, 0, 0.5);
+      background-color: rgba(255, 42, 0, 1);
+    }
+  }
+
+  @keyframes circleAnimationOut-2 {
+    0% {
+      box-shadow: 0 0 0 0px rgba(255, 150, 0, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 0 12px rgba(255, 150, 0, 0.2);
+    }
+  }
+  @keyframes circleAnimationIn-2 {
+    0% {
+      box-shadow: 0 0 0 0px rgba(255, 150, 0, 0.5);
+      background-color: rgba(255, 150, 0, 1);
+    }
+    100% {
+      box-shadow: 0 0 0 4px rgba(255, 150, 0, 0.5);
+      background-color: rgba(255, 150, 0, 1);
+    }
+  }
+
+  @keyframes circleAnimationOut-3 {
+    0% {
+      box-shadow: 0 0 0 0px rgba(252, 255, 0, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 0 12px rgba(252, 255, 0, 0.2);
+    }
+  }
+  @keyframes circleAnimationIn-3 {
+    0% {
+      box-shadow: 0 0 0 0px rgba(252, 255, 0, 0.5);
+      background-color: rgba(252, 255, 0, 1);
+    }
+    100% {
+      box-shadow: 0 0 0 4px rgba(252, 255, 0, 0.5);
+      background-color: rgba(252, 255, 0, 1);
+    }
+  }
+
+  @keyframes circleAnimationOut-good {
+    0% {
+      box-shadow: 0 0 0 0px rgba(0, 255, 48, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 0 12px rgba(0, 255, 48, 0.2);
+    }
+  }
+  @keyframes circleAnimationIn-good {
+    0% {
+      box-shadow: 0 0 0 0px rgba(0, 255, 48, 0.5);
+      background-color: rgba(0, 255, 48, 1);
+    }
+    100% {
+      box-shadow: 0 0 0 4px rgba(0, 255, 48, 0.5);
+      background-color: rgba(0, 255, 48, 1);
+    }
+  }
+
+  @keyframes circleAnimationOut-none {
+    0% {
+      box-shadow: 0 0 0 0px rgba(57, 58, 55, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 0 12px rgba(57, 58, 55, 0.2);
+    }
+  }
+  @keyframes circleAnimationIn-none {
+    0% {
+      box-shadow: 0 0 0 0px rgba(57, 58, 55, 0.5);
+      background-color: rgba(57, 58, 55, 1);
+    }
+    100% {
+      box-shadow: 0 0 0 4px rgba(57, 58, 55, 0.5);
+      background-color: rgba(57, 58, 55, 1);
+    }
+  }

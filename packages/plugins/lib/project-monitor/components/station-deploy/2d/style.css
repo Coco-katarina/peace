@@ -1,0 +1,25 @@
+.station-tree-node-normal{
+    margin-right: 6px;
+    padding: 0 4px;
+    height: 15px;
+    line-height: 15px;
+    background: #108ee9;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+}
+
+.icon .tip{
+    margin-left:10px;
+    -webkit-transition:opacity 0.1s 0.2s;
+    opacity:0;
+    pointer-events:none;
+}
+.icon:hover .tip{
+    -webkit-transition:opacity 0.2s;
+    opacity:1;
+    pointer-events:auto;
+}
+.icon .tip:hover{
+    -webkit-transition:none;
+}

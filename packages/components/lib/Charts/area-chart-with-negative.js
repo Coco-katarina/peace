@@ -1,124 +1,117 @@
+
 import React, { Component } from 'react';
-import createG2 from 'g2-react';
-import G2, { Plugin } from 'g2';
-import 'g2-plugin-slider';
-import './theme';
-import { Button } from 'antd';
-import FileSaver from 'file-saver';
+import ReactEcharts from 'echarts-for-react';
+import * as echarts from 'echarts';
+import {
+    tooltip, toolbox, legend, xAxis, splitLine, axisLine, axisTick, axisLabel, yAxis, DEFAULT_COLOR, color, dataZoom
+} from './constants';
+/**
+ * props:
+ * 
+ *      data: [ { name: "湿度", value: -10, time: "2018-03-13 10:31:59" }],
+ *      height: 图表高度
+ *      config: { yAxis: 修改默认y轴值对应的键, xAxis: 修改默认x轴值对应的键,}
+ */
 
 class AreaChartWithNegative extends Component {
     constructor(props) {
         super(props);
-
-        this.sliderId = 'range' + Math.floor(Math.random() * 1000000000);
-        const Chart = createG2((chart, configs) => {
-            chart.source(props.data, {
-                'value': {
-                    formatter: val => {
-                        if (configs.unit) {
-                            return val + configs.unit
-                        } else {
-                            return val
-                        }
-                    }
-                },
-                'time': {
-                    range: [0, 1],//输出数据的范围，默认[0, 1]，格式为 [min, max]，min 和 max 均为 0 至 1 范围的数据。  为毛是0-1
-                    type: 'time',//类型  连续的时间类型
-                    alias: '时间',//当前数据字段的显示别名，一般用于将字段的英文名称转换成中文名。
-                    mask: 'yyyy-mm-dd HH:MM:ss', //
-                }
-            });
-            chart.axis('time', {//坐标轴配置，该方法返回 chart 对象。
-                title: null,
-                //坐标轴标题 null不现实
-                mask: 'yyyy-mm-dd HH:MM:ss'
-            });
-            chart.axis(props.yAxis || 'value', {
-                title: null,
-            });
-            chart.legend(false
-                // {//配置图表图例
-                //     title: null,//图例标题的显示样式设置，如果值为 null，表示不展示图例标题
-                //     position: 'bottom', // 设置图例的显示位置
-                // }
-            );
-            //area()绘制区域图 返回geom对象
-            //position('x*y') 数据值映射到图形的位置上的方法 
-            //color()将数据值映射到图形的颜色上的方法
-            //shape()将数据值映射到图形的形状上的方法
-            chart.area().position('time*value').color('name', this.props.colors).shape('area');
-            chart.line().position('time*value').color('name', this.props.colors).shape('line').size(1);
-
-            // let geom = chart.interval().position(`${config.xAxis || 'x'}*${config.yAxis || 'y'}`).size(15);
-
-            // this.props.colors ? geom.color('name', this.props.colors) : geom.color('name');
-
-            //chart.area().position('time*value').color('#D5F0FD').shape('smooth');
-            //chart.line().position('time*value').shape('smooth').size(2);            
-
-            if (!configs || !configs.slider) {
-                chart.render();
-            } else {
-                // 创建滑动条
-                Plugin.slider.ATTRS.textAttr = { fill: '#fff' };
-                var slider = new Plugin.slider({
-                    domId: this.sliderId,
-                    height: 30,
-                    charts: chart,
-                    xDim: 'time',
-                    yDim: props.yAxis || 'value',
-                    start: configs.slider.start,
-                    end: configs.slider.end,
-                });
-                slider.render();
-            }
-            this.chartDownload = chart;
-        });
-        this.Chart = Chart;
+        this.series = null;
     }
-    download = () => {
-        //this.chartDownload.downloadImage();
-        const dataurl = this.chartDownload.toImage();
-        let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-        while (n--) {
-            u8arr[n] = bstr.charCodeAt(n);
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        const { data } = nextProps;
+        if (JSON.stringify(data) != JSON.stringify(this.props.data)) {
+            this.series = this.setData(nextProps);
         }
-        let blob = new Blob([u8arr], { type: mime });
+    }
+    setData = (props) => {
+        const yaxis = props.configs?.yAxis || 'value';
+        
+        let series = [{
+            name: props.data[0]?.name,
+            data:  props.data.map(v => v[yaxis]),
+            type: 'line',
+            symbol: 'none',
+            sampling: 'lttb',
+            itemStyle: {
+                color: 'rgb(255, 70, 131)'
+            },
+            areaStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  {
+                    offset: 0,
+                    color: 'rgb(255, 158, 68)'
+                  },
+                  {
+                    offset: 1,
+                    color: 'rgb(255, 70, 131)'
+                  }
+                ])
+            },
+        }];
+       
+        return series;
+    }
 
-        FileSaver.saveAs(blob, "chart.png");
+    UNSAFE_componentWillMount() {
+        this.series = this.setData(this.props);
+    }
+    getOption = () => {
+        const { configs, data } = this.props;
+        const xaxis = configs?.xAxis || 'time';
+        
+        let option = {
+            title: {
+                left: 'center',
+                text: configs?.title || ''
+            },
+            tooltip: {
+                trigger: 'axis',
+                position: function (pt) {
+                  return [pt[0], '10%'];
+                },
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            toolbox: {
+                feature: {
+                  restore: {},
+                  saveAsImage: {}
+                },
+                right: 30
+            },
+            backgroundColor: DEFAULT_COLOR,
+            color: color,
+            xAxis: { 
+                ...xAxis.category,
+                boundaryGap: false,
+                data: data.map(v => v[xaxis])
+            },
+            series: this.series,
+            //color: ['#4BD9AD'],
+            yAxis: [{
+                type: 'value',
+                boundaryGap: [0, '100%']
+            }]
+        }
+       
+        if (configs && configs.slider) { 
+            option.dataZoom = [{...dataZoom, ...configs.slider },{ ...configs.slider }];
+        }
+        return option;
     }
     render() {
-        const { data, width, height, configs, index } = this.props;
-
-        let margin = [20, 160, 30, 60];
-        const showSlider = configs && configs.slider;
-        if (showSlider) {
-            margin = [20, 145, 80, 138];
-        }
-
+        const { height, width } = this.props;
+        const options = this.getOption();
+       
         return (
-            <div key={`area-chart-container-${index}`} style={{ position: 'relative', paddingTop: 20, marginBottom: 24 }}>
-                {/* <div style={{ textAlign:'center', color:'#929EB3' }} >{configs.title}</div> */}
-                <div key={`area-chart-title-${index}`} style={{ textAlign: 'center' }} >{configs.title}</div>
-                <div key={`area-chart-button-${index}`} style={{ position: 'absolute', right: '20px', top: '20px', zIndex: 2000 }} >
-                    <Button onClick={this.download} size="default">导出</Button>
-                </div>
-                <div key={`area-chart-${index}`}>
-                    <this.Chart
-                        key={`area-chart-${index}`}
-                        data={data} width={width} height={height || 300}
-                        plotCfg={{ margin: margin }} forceFit={true} ref="myChart" configs={configs} />
-                    {
-                        showSlider ? [
-                            <div key={`area-chart-divider-${index}`} className="chart-inner-divider"></div>,
-                            <div key={`area-chart-slider-${index}`} className="chart-slider" id={this.sliderId}></div>
-                        ] : null
-                    }
-                </div>
-            </div>
-        );
+            <ReactEcharts
+                option={options}
+                notMerge={true}
+                lazyUpdate={true}
+                style={{ height: height || '300px', margin: '0', width: width || 'auto' }} />
+        )
     }
 }
 

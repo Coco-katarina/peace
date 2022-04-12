@@ -54,7 +54,12 @@ const resultHandler =
                     // 退出到登录页
                     const user = JSON.parse(sessionStorage.getItem('user'));
                     sessionStorage.removeItem('user');
-                    if (user && user.domain) {
+                    const redirect401 = sessionStorage.getItem('redirect401');//重定向地址 字符串
+                    sessionStorage.removeItem('user');
+                    if (redirect401) {
+                        // window.document.location
+                        window.location.href = redirect401
+                    } else if (user && user.domain) {
                         window.document.location.replace(`/${user.domain}/signin`)
                     } else {
                         window.document.location.replace('/signin');

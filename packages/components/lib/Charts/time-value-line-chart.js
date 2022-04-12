@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import createG2 from 'g2-react';
-
-import G2, { Plugin } from 'g2';
-//import G2 from '@antv/g2'
-//import DataSet from '@antv/data-set';
-
-import 'g2-plugin-slider';
-//import Slider from '@antv/g2-plugin-slider';
-
-import './theme';
-import { Button } from 'antd';
-import FileSaver from 'file-saver';
+import ReactEcharts from 'echarts-for-react';
+import * as echarts from 'echarts';
+import moment from 'moment';
+import {
+    tooltip, toolbox, legend, xAxis, splitLine, axisLine, axisTick, axisLabel, yAxis, DEFAULT_COLOR, color, dataZoom
+} from './constants';
+const TextStyleColor = 'gray';
+import { Button, Select } from 'antd';
+import PeriodThreshold from './period-threshold';
+const Option = Select.Option;
 /**
  * props:
  * 
@@ -28,133 +26,455 @@ import FileSaver from 'file-saver';
  *      },
  *      yAxis: 修改默认y轴值对应的键
  */
-
-let chartDownload = "";
 class TimeValueLineChart extends Component {
     constructor(props) {
         super(props);
+        this.changeUnits = [{ units: ['mm', 'm'], ratio: [1, 1000] }, { units: ['kPa', 'MPa'], ratio: [1, 1000] }];
+        this.series = null;
+        this.seriesGraph = [];
+        this.legendData = [];
+        this.echartInstance = null;
+        this.isThresholdLoaded = false;
+        this.isOriginThresholdLoaded = false;
+        this.xAxisStart = null
+        this.state = {
+            ratio: null,
+            option: null,
+            changedUnit: null,
+            thresholds: null,
+            stationName: '',
+            thresholdStations: {},
+            thresholdDisplay: false
+        }
+    }
 
-        this.sliderId = 'range' + Math.floor(Math.random() * 1000000000);
-        const Chart = createG2((chart, configs) => {
-            chart.source(props.data, {
-                'value': {
-                    formatter: val => {
-                        if (configs.unit) {
-                            return val + configs.unit
-                        } else {
-                            return val
-                        }
-                    }
-                },
-                'time': {
-                    range: [0, 1],
-                    type: 'time',
-                    alias: '时间',
-                    mask: 'yyyy-mm-dd HH:MM:ss'
-                },
-                'days': {
-                    type: 'linear',
-                    alias: '',
-                    formatter: val => {
-                        return val + '天'
-                    }
-                }
-            });
-            chart.axis(props.xAxis || 'time', {
-                title: null,
-                line: {
-                    //stroke: '#C0C0C0',
-                }, label: {
-                    textStyle: {
-                        //fill: '#C0C0C0', // 文本的颜色
-                    }
-                }
-                //mask: 'yyyy-mm-dd HH:MM:ss'
-            });
-            chart.axis(props.yAxis || 'value', {
-                title: null,
-            });
-            chart.legend({
-                title: {},
-                position: 'bottom', // 设置图例的显示位置
-                itemWrap: true,
-                dy: 20,
-            });
-            chart.tooltip(true, {
-                map: {
+    UNSAFE_componentWillReceiveProps(nextProps) {
+        const { data, threshold } = nextProps;
+        const { changedUnit, ratio, thresholdDisplay } = this.state;
+        if (JSON.stringify(data) != JSON.stringify(this.props.data)) {
+            this.series = this.setData(nextProps, changedUnit, ratio);
+            this.setState({ option: this.getOption() })
+        }
+        if (!this.isOriginThresholdLoaded && thresholdDisplay) {
+            this.setThresholdData(nextProps);
+        }
+    }
 
+
+    setData = (props, changedUnit = null, ratio = null) => {
+        let xAxisValue = props.xAxis || 'time';
+        let yAxisValue = props.yAxis || 'value';
+        let types = {
+        };
+        let data = JSON.parse(JSON.stringify(props.data));
+        data.map(ii => {
+            if (!types[ii.name]) {
+                types[ii.name] = Object.assign({
+                    name: ii.name, data: []
+                }, {
+                    type: 'line',
+                    smooth: false,
+                    showSymbol: false,
+                });
+            }
+            if (changedUnit && ratio) {
+                let dBitArr = ii[yAxisValue].toString().split(".")
+                let bitNums = dBitArr[1] ? dBitArr[1].length : 0;
+                ii[yAxisValue] = parseFloat((ii[yAxisValue] * ratio).toFixed(bitNums));
+            }
+            this.legendData.push(ii.name);
+            types[ii.name].data.push({
+                name: ii.time,
+                value: [ii[xAxisValue], ii[yAxisValue]],
+            });
+
+            if (ii.time && !this.xAxisStart) {
+                this.xAxisStart = ii.time;
+            }
+        });
+        let series = [];
+        for (let t in types) {
+            series.push(types[t]);
+        }
+        return series;
+    }
+
+    setThresholdData = (props) => {
+
+        this.isOriginThresholdLoaded = true;
+        const { threshold, stations, itemName } = props;
+        let data = [], seriesItem = {};
+        if (stations) {
+            stations.map(sId => {
+                const thd = threshold[sId] && threshold[sId][itemName] ? threshold[sId][itemName] : null;
+                if (thd && thd.length) {
+                    thd.map(ts => {
+                        const strThreshold = ts.value, level = ts.level;
+                        let thList = strThreshold.split(';');
+                        thList.map(th => {
+                            let numList = th.split(',');
+                            const min = numList[0].replace("(", "");
+                            const max = numList[1].replace(")", "");
+                            let dataItem = [], yStart = 0, min_ = min, max_ = max;
+
+                            if (max == '+') {
+                                max_ = Number(min) + 2
+                            } else if (min == '-') {
+                                min_ = Number(max) - 2;
+                            }
+                            yStart = (Number(max_) + Number(min_)) / 2;
+                            dataItem = [this.xAxisStart, yStart];
+                            data.push(dataItem);
+                        })
+                    })
                 }
             })
-            chart.on('tooltipchange', function (ev) {
-                if (props.xAxis == 'days') {
-                    for (let i = 0; i < ev.items.length; i++) {
-                        let item = ev.items[i];
-                        item.name = item.point._origin.time;
+            seriesItem = {
+                type: 'custom',
+                clip: true,
+                data: data,
+            }
+            this.series.push(seriesItem);
+        }
+    }
+
+    initEchartRef(e) {
+        if (!e) return;
+        const echartInstance = e.getEchartsInstance();
+        if (echartInstance) {
+            this.echartInstance = echartInstance;
+            this.timer ? clearTimeout(this.timer) : null;
+            const isDefault = true;
+            this.timer = setTimeout(() => {
+                this.refreshThresholdInfo(echartInstance, isDefault);
+            }, 1000);
+        }
+    }
+
+    refreshThresholdInfo = (echartInstance, isDefault, selectedStationId) => {
+        if (echartInstance && !this.isThresholdLoaded) {
+            const echartInstance = this.echartInstance;
+            const xaxis = echartInstance.getModel().getComponent('xAxis').axis;
+            const yaxis = echartInstance.getModel().getComponent('yAxis').axis;
+            if (xaxis && xaxis.scale._extent) {
+                //console.log(yaxis)
+                let xAxis = xaxis.scale._extent;
+                let yAxis = yaxis.scale._extent;
+                const thresholdConfig = this.getThreshold(isDefault, selectedStationId);
+                this.isThresholdLoaded = true;
+                this.drawThresholdLine(thresholdConfig, xAxis, yAxis);
+            }
+        }
+    }
+
+    getThreshold = (isDefault = true, selectedStationId = null) => {
+        let thresholdConfig = null, stationName = null, sensorId = null;
+        const { threshold, stations, itemName } = this.props;
+        if (threshold && stations) {
+            const sortStation = stations.sort((a, b) => a - b);
+            if (!isDefault) {
+                sensorId = selectedStationId;
+            } else {
+                sensorId = sortStation[0];
+            }
+            thresholdConfig = threshold[sensorId] && threshold[sensorId][itemName] ? threshold[sensorId][itemName] : null
+            stationName = threshold[sensorId] ? threshold[sensorId].info.name : ''
+        }
+        this.setState({ thresholds: thresholdConfig ? thresholdConfig : null, stationName })
+        return thresholdConfig;
+    }
+
+    getThresholdColor = (level) => {
+        switch (level) {
+            case 1:
+                return 'rgb(255,229,230)';
+            case 2:
+                return 'rgb(255,246,230)';
+            case 3:
+                return 'rgb(229,230,249)';
+        }
+    }
+
+    drawThresholdLine = (thresholdConfig, xAxis, yAxis) => {
+        let threshold = thresholdConfig && thresholdConfig.length ? thresholdConfig : [],
+            option_ = this.state.option, isRecover = false;
+        this.seriesGraph = [];
+        if (threshold && threshold.length) {
+            if(this.state.thresholdDisplay){
+                threshold.map(ts => {
+                    const strThreshold = ts.value, level = ts.level;
+                    let thList = strThreshold.split(';');
+                    thList.map(th => {
+                        let numList = th.split(',');
+                        let min = numList[0].replace("(", "");
+                        let max = numList[1].replace(")", "");
+                        const props = { xAxis, yAxis, level, min, max };
+                        this.drawCustomizeGraph(props);
+                    })
+                })
+            }
+        } else {
+            isRecover = true;
+        }
+       
+        option_.series = this.series.concat(this.seriesGraph);
+        
+        
+        this.echartInstance.setOption(option_, isRecover);
+    }
+
+    drawCustomizeGraph = (props) => {
+        const { xAxis, yAxis, level, min, max } = props;
+        let data = [], yStart = 0, yHeight = 0, min_ = min, max_ = max, xWidth = xAxis[1] - xAxis[0]; // [yStart, xStart, xEnd, yHeight]
+        if (min == '-' || (min.indexOf('-') > -1 && min < yAxis[0])) {
+            min_ = yAxis[0];
+        }
+        if (max == '+' || (max > 0 && max > yAxis[1])) {
+            max_ = yAxis[1];
+        }
+        if ((max <= 0 && max <= yAxis[0]) || (min >= 0 && min >= yAxis[1])) {
+            return;
+        }
+        yStart = (Number(max_) + Number(min_)) / 2;
+        yHeight = Number(max_) - Number(min_)
+        let dataItem = []
+        if (props.xAxis == 'time') {
+            dataItem = [moment(xAxis[0]).format('YYYY-MM-DD HH:mm:ss'), yStart];
+        } else {
+            dataItem = [xAxis[0], yStart];
+        }
+        data.push(dataItem);
+
+        let thresholdColor = this.getThresholdColor(level);
+        const props_ = { thresholdColor, yHeight, xWidth }
+        let seriesItem = {
+            type: 'custom',
+            name: `threshold-${level}`,
+            renderItem: (params, api) => this.renderItem(params, api, props_),
+            clip: true,
+            data: data,
+            encode: {
+                // 这样这个系列就不会被 x 轴以及 x
+                // 轴上的 dataZoom 控制了。
+                x: -1,
+                y: 1
+            }
+        }
+        
+
+        this.seriesGraph.push(seriesItem);
+    }
+
+    renderItem = (params, api, props) => {
+        const { thresholdColor, yHeight, xWidth } = props;
+        var categoryIndex = api.value(1);
+        var start = api.coord([api.value(0), categoryIndex]);
+        // var end = api.coord([api.value(2), categoryIndex]);
+        var height = api.size([0, yHeight])[1] * 1;
+
+        var rectShape = echarts.graphic.clipRectByRect({
+            x: 0,
+            y: start[1] - height / 2,
+            // y: params.seriesIndex,
+            width: xWidth,
+            height: height
+        }, {
+            x: params.coordSys.x,
+            y: params.coordSys.y,
+            width: params.coordSys.width,
+            height: params.coordSys.height
+        });
+
+        return {
+            type: 'rect',
+            shape: rectShape,
+            style: api.style({ fill: thresholdColor, stroke: thresholdColor })
+        };
+    }
+
+    UNSAFE_componentWillMount() {
+        this.series = this.setData(this.props);
+       
+        //this.setThresholdData(this.props);
+        this.setState({ option: this.getOption() })
+    }
+    getOption = (name) => {
+        const that = this;
+        const { configs } = this.props;
+        const { changedUnit } = this.state;
+        let option = {
+            title: {
+                text: name,
+                //textStyle: { color: '#929EB3', fontWeight: 'normal', fontSize: 13 },
+                top: 10, left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis',
+                formatter: function (params) {
+                    let result = '';
+                    if (that.props.xAxis == 'days') {
+                        params.forEach(function (item) {
+                            if (!result.length)
+                                result += item.seriesName;
+                            result += "</br>" + item.marker + item.name + '：' + item.data.value[1] + (changedUnit || configs.unit || '');
+                        })
+                    } else
+                        params.forEach(function (item) {
+                            if (!result.length)
+                                result += item.name;
+                            if (item.data.value && item.data.value.length) {
+                                result += "</br>" + item.marker + item.seriesName + '：' + item.data.value[1] + (changedUnit || configs.unit || '');
+                            }
+                        })
+                    return result;
+                }
+            },
+            toolbox: {...toolbox, right: 30},
+            backgroundColor: DEFAULT_COLOR,
+            color: color,
+            legend: { ...legend.right, data: this.legendData },
+            yAxis: {
+                type: 'value',
+                scale: true,
+                splitLine: splitLine,
+                axisLine: axisLine,
+                axisTick: axisTick,
+                axisLabel: {
+                    formatter: function (value, index) {
+                        if (configs && configs.unit) {
+                            return value + (changedUnit || configs.unit)
+                        } else {
+                            return value
+                        }
                     }
                 }
-            });
-            chart.line().position(`${props.xAxis || 'time'}*${props.yAxis || 'value'}`).color('name').shape('line').size(2);
 
-            if (!configs || !configs.slider) {
-                chart.render();
-            } else {
-                // 创建滑动条
-                //Plugin.slider.ATTRS.textAttr = { fill: '#fff' };
-                var slider = new Plugin.slider({
-                    domId: this.sliderId,
-                    height: 30,
-                    charts: chart,
-                    xDim: props.xAxis || 'time',
-                    yDim: props.yAxis || 'value',
-                    start: configs.slider.start, // 滑块开始值，用户未定义则使用默认值
-                    end: configs.slider.end // 滑块结束值，用户未定义则使用默认值
-                });
-                slider.render();
-            }
-            this.chartDownload = chart;
-        });
-        this.Chart = Chart;
-    }
-    download = () => {
-        //this.chartDownload.downloadImage();
-        const dataurl = this.chartDownload.toImage();
-        let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-        while (n--) {
-            u8arr[n] = bstr.charCodeAt(n);
+            },
+            series: this.series,
+            grid: { left: 80, right: 130 }
         }
-        let blob = new Blob([u8arr], { type: mime });
+        if (this.props.xAxis == 'days') {
+            option.xAxis = {
+                type: 'value',
+                splitLine: {
+                    show: false
+                },
+                axisLine: axisLine,
+                axisTick: axisTick,
+                axisLabel: {
+                    formatter: function (value, index) {
+                        return value + '天'
+                    }
+                }
+            };
+        } else {
+            option.xAxis = xAxis.time;
+        }
+       
+        if (configs && configs.slider) { 
+            option["dataZoom"] = [{...dataZoom, ...configs.slider },{ ...configs.slider }];
+        }
+        this.setState({ option })
+        return option;
+    }
+    unitChange(v, unitsData) {
+        const { configs } = this.props;
+        const { option } = this.state;
+        let vIndex = unitsData.units.findIndex(u => u == v);
+        let currUnitIndex = unitsData.units.findIndex(u => u == configs.unit);
+        let ratio = unitsData.ratio[currUnitIndex] / unitsData.ratio[vIndex];
+        this.series = this.setData(this.props, v, ratio);
+        this.setState({ changedUnit: v, ratio: ratio }, () => {
+            let option_ = this.getOption();;
+            option_.series = this.series.concat(this.seriesGraph);
+            this.echartInstance.setOption(option_, true);
+        });
+    }
 
-        FileSaver.saveAs(blob, "chart.png");
+    onChartClick = (params) => {
+        
+        const { threshold } = this.props;
+        const { thresholdStations, stationName } = this.state;
+        const selectStation = params.seriesName;
+        if (stationName != selectStation && threshold && Object.keys(threshold).length) {
+            const selectStataionId = threshold[selectStation] ? threshold[selectStation].info.id : null;
+            this.isThresholdLoaded = false;
+            const isDefault = false;
+            this.refreshThresholdInfo(this.echartInstance, isDefault, selectStataionId);
+        }
+    }
+
+    onMouseOver = (params) => {
+        if (params.seriesName && params.seriesName.indexOf('threshold') > -1) {
+            this.echartInstance.dispatchAction({
+                type: 'downplay',
+                seriesName: params.seriesName
+            })
+        }
+    }
+
+    handleThresholdDisplayChange = (checked) => {
+       
+        const { changedUnit, ratio } = this.state;
+      
+        this.series = this.setData(this.props, changedUnit, ratio);
+        
+        this.setState({ thresholdDisplay: checked }, () => {
+            let option_ = this.getOption();
+            if(checked){
+                this.setThresholdData(this.props);
+                
+            }
+            this.isThresholdLoaded = false;
+            this.timer ? clearTimeout(this.timer) : null;
+            const isDefault = true;
+            this.timer = setTimeout(() => {
+                this.refreshThresholdInfo(echartInstance, isDefault);
+            }, 1000);
+            
+           // this.refreshThresholdInfo(this.echartInstance, true)
+            // console.log('%c [ option_ ]', 'font-size:13px; background:pink; color:#bf2c9f;', option_)
+            // this.echartInstance.setOption(option_, true);
+        });
+        
     }
 
     render() {
-        const { unit, data, height, configs, xAxis, index } = this.props;
+        const { data, width, height, configs } = this.props;
 
-        let margin = [20, 160, 30, 60];
-        const showSlider = configs && configs.slider;
-        if (showSlider) {
-            //margin = [20, 145, 30, 138];
-            margin = [20, 145, 80, 138];
-        }
+        const unit = configs && configs.unit ? configs.unit : null;
+        const unitsData = unit ? this.changeUnits.find(cu => cu.units.some(cus => cus == unit)) : null;
         return (
-            <div key={`chart-container-${index}`} style={{ position: 'relative', paddingTop: 20, marginBottom: 24 }}>
-                <div key={`chart-header-${index}`} style={{ position: 'absolute', right: '20px', top: '20px', zIndex: 2 }} >
-                    <Button key={`chart-button-${index}`} onClick={this.download} size="default">导出</Button>
-                </div>
-                <div>
-                    <this.Chart
-                        key={`chart-${index}`}
-                        data={data}
-                        height={height || 500} xAxis={xAxis}
-                        plotCfg={{ margin: margin }} forceFit={true} ref="myChart" configs={configs} />
+            <div style={{ position: 'relative', paddingTop: 20, marginBottom: 24, backgroundColor: DEFAULT_COLOR }}>
+                <div style={{ position: 'absolute', right: '20px', top: '10px', zIndex: 2000 }} >
                     {
-                        showSlider ? [
-                            <div key={`chart-divider-${index}`} className="chart-inner-divider"></div>,
-                            <div key={`chart-slider-${index}`} className="chart-slider" id={this.sliderId}></div>
-                        ] : null
+                        unitsData ?
+                            <span>
+                                <span>单位：</span>
+                                <Select style={{ width: 70, marginRight: 10 }} defaultValue={unit} onChange={(v) => this.unitChange(v, unitsData)}>
+                                    {
+                                        unitsData.units.map(us => <Option value={us}>{us}</Option>)
+                                    }
+                                </Select>
+                            </span> : ''
                     }
                 </div>
+                <PeriodThreshold 
+                    direction={'horizontal'} 
+                    thresholds={this.state.thresholds} 
+                    stationName={this.state.stationName} 
+                    onThresholdDisplayChange={this.handleThresholdDisplayChange}
+                    thresholdDisplay={this.state.thresholdDisplay}
+                />
+                <ReactEcharts
+                    ref={(e) => this.initEchartRef(e)}
+                    onChartReady={this.onChartReady}
+                    option={this.state.option}
+                    notMerge={true}
+                    lazyUpdate={true}
+                    onEvents={{ 'click': this.onChartClick, 'mouseover': this.onMouseOver }}
+                    style={{ height: height || '500px', margin: '0 auto' }} />
+
             </div>
         );
     }

@@ -18,9 +18,11 @@ export default class Func {
 
     static judgeRights(authorizationCode, dom = null) {
         const userInfo = JSON.parse(sessionStorage.getItem('user'));
-        const { portal, resources } = userInfo;
+        const { portal, resources = [], portals } = userInfo || {};
         let judgeRslt = false;
-        if (portal == 'A') {
+        if (portal && portal == 'A') {
+            judgeRslt = true;
+        }else if(Array.isArray(portals) && portals.find(v=> v.portal == 'A')){
             judgeRslt = true;
         } else if (typeof (authorizationCode) == 'object') {
             judgeRslt = authorizationCode.some(a => {
